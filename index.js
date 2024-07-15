@@ -1,45 +1,64 @@
-// let header = document.getElementById("ex-header");
-// let result = document.getElementById("ex-result");
 let table = document.getElementById("ex-table");
 
 table.innerHTML = ``;
 
-let exercise = [];
-exercise[0] = 0;
-let exSize = 3;
-let counter = 0;
+// testIdentification();
+genExercise(3);
 
 function testIdentification(){
-    // It says it's base 5 when I'm adding 5 or more and it fits the column
-    let bases = identifyBase(6,"sub",7); 
-    console.log(`Base 5: ${bases[5]} | Base 10: ${bases[10]}`);
+    let bases = identifyBase(2,"add",10); 
+    console.log(`Base 5: ${bases.isBase5} | Base 10: ${bases.isBase10}`);
 };
-testIdentification();
 
-function genExercise (size){
-    for (i=1;i<=exSize;i++){
+// Isert base as a parameter here later in order to be possible for the user to customize the calculations
+function genExercise (size){ 
+    let exercise = [];
+    exercise[0] = null; // This index stores the result of the calculation
+    let abacusNumber = 0;
+
+    for (i=1;i<=size;i++){
         let operation = operationGen();
         
         // Defining the number and printing it on console
         exercise[i] = Math.floor(Math.random() * 10) * operation;
-        console.log(exercise[i]);
+        let opBase = identifyBase(abacusNumber,operation,exercise[i]);
+
+        console.log("First number base: " + opBase);
+        
+        while (!opBase.isBase5){
+            exercise[i] = Math.floor(Math.random() * 10) * operation;
+            let reviewedBase = identifyBase(abacusNumber,operation,exercise[i]);
+            console.log("Second number base: " + reviewedBase);
+
+            if (reviewedBase.isBase5) break;
+        };
+
+
+        console.log("Generated number:" + exercise[i]);
+
+        // This one would check if the operation doesn't result in negative number before moving forward
+        // if (abacusNumber + exercise[i] < 0){
+        //     break
+        // } else if (opBase.isBase5){
+        //     abacusNumber += exercise[i];
+        // } else {
+        //     break
+        // }
+
         table.innerHTML += `<tr>${exercise[i]}</tr>`;
         
         // Updating the result
         exercise[0] += exercise[i];
         
-        counter++;
-        console.log("Counter: " + counter);
-        
         // Calculating the result
-        if (i == exSize){
+        if (i == size){
             console.log("Result: " + exercise[0]);
             table.innerHTML += `<tr>Result: ${exercise[0]}</tr>`;
         }
     }
-    };
+};
 
-    function operationGen () {
+function operationGen () {
         let operation;
         let random = Math.random();
         
@@ -51,42 +70,45 @@ function genExercise (size){
     
         console.log("Operation: " + operation);
         return operation;
+};
+
+function identifyBase (number1, op, number2){
+    let number1OnAbacus = convertToAbacus(number1);
+    let number2OnAbacus = convertToAbacus(number2);
+
+    let operation = {
+        name: op,
+        isBase5: false,
+        isBase10: false
     };
-
-    function identifyBase (number1, operation, number2){
-        let number1OnAbacus = convertToAbacus(number1);
-        let base = [];
-
-        base[5] = false;
-        base[10] = false;
-        
-        if (operation == "sub" && number2 <= number1 && number2 <= 4 && number2>number1OnAbacus[1]){
-            base[5] = true;
-        } else if (operation == "sub" && number2 > number1){
-            base[10] = true
-        }
-
-        if (operation == "add" && ((number1 + number2) <= 9) && (number2 > (4 - number1OnAbacus[1]))){
-            base[5] = true;
-        } else if (operation == "add" && (number1 + number2) > 9){
-            base[10] = true;
-        }
-
-        return base;
-    };
-
-    function convertToAbacus (number){
-
-        // beads[0] = 5-bead amount, beads[1] = 1-bead amount
-        let beads = [];
-        beads[0] = 0;
-
-        if (number >= 5){
-            beads[0] = 1;
-            beads[1] = number - 5;
-        } else {
-            beads[1] = number;
-        }
-
-        return beads;
+    
+    if (op == "sub" && number2 <= number1 && number2 <= 4 && number2>number1OnAbacus.bead1){
+        operation.isBase5 = true;
+    } else if (op == "sub" && number2 > number1){
+        operation.isBase10 = true
     }
+
+    if (op == "add" && ((number1 + number2) <= 9) && (number1OnAbacus.bead1 + number2OnAbacus.bead1 > 4)){
+        operation.isBase5 = true;
+    } else if (op == "add" && (number2 <= 9) && (number1 + number2) > 9){
+        operation.isBase10 = true;
+    }
+
+    return operation;
+};
+
+function convertToAbacus (number){
+    let rod = {
+        bead1: 0,
+        bead5: 0,
+    }
+
+    if (number >= 5){
+        rod.bead5 = 1;
+        rod.bead1 = number - 5;
+    } else {
+        rod.bead1 = number;
+    }
+
+    return rod;
+};

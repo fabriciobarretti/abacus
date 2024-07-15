@@ -1,9 +1,36 @@
-p{
-    font-size: 30px;
-    text-align: center;
-    /* font-weight: bold; */
+/* body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
 }
 
-#ex-table{
+.table-container {
+    display: flex;
+    justify-content: center;
     align-items: center;
+    height: 100%;
 }
+
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: white;
+    text-align: center;
+}
+
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+th {
+    background-color: #f4f4f4;
+} */
