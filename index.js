@@ -10,28 +10,26 @@ function genExercise (size){
     let exercise = [];
     exercise[0] = null; // This index stores the result of the calculation
     let abacusNumber = 0;
+    let opBase;
 
     for (i=1;i<=size;i++){
+        console.log(`STEP #` + i);
         let operation = operationGen();
         
         // Defining the number and printing it on console
         if (i == 1){
             exercise[i] = Math.floor(Math.random() * 9) + 1; //Forces the first to be positive and greater than 0
+            abacusNumber = exercise[i];
+            console.log("Generated number:" + abacusNumber);
         } else {
             exercise[i] = (Math.floor(Math.random() * 9) + 1) * operation.multiplier;
-            console.log("Operation: " + operation.name);
+            console.log("Generated number:" + exercise[i]);
+            opBase = identifyBase(abacusNumber,operation,exercise[i]);
         }
-        console.log("Generated number:" + exercise[i]);
-        
-        let opBase = identifyBase(abacusNumber,operation,exercise[i]);  
-        // console.log(opBase);
 
         if (i > 1){
-            // console.log(`Operation: ${abacusNumber}+${exercise[i]}`);
-            // console.log(`Operation multiplier: ${operation.symbol}`);
             console.log("Base 5: " + opBase.isBase5);
             console.log("Base 10: " + opBase.isBase10);
-            
         }
 
         
@@ -96,11 +94,10 @@ function operationGen () {
         return operation;
 };
 
-// SOMETHING IS HAPPENING HERE WHEN IT RECEIVES AN OBJECT AS A PARAMETER. COMPARE WITH TESTIDENTIFICATION()
+// CHECK BASE10 SUB WHEN numberonabacus>10
 function identifyBase (number1, op, number2){
     let number1OnAbacus = convertToAbacus(number1);
     let number2OnAbacus = convertToAbacus(number2);
-
     
 
     if (op.name == "sub" && (number2 <= number1) && (number2 <= 4) && (number2 > number1OnAbacus.bead1)){
@@ -117,6 +114,7 @@ function identifyBase (number1, op, number2){
 
     console.log("IDENTIFY BASE OBJECT: ");
     console.log(op);
+    console.log(`Number 1: ${number1} | Number 2: ${number2}`);
 
     return op;
 };
