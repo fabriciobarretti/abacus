@@ -8,8 +8,7 @@ genExercise(3);
 // Isert base as a parameter here later in order to be possible for the user to customize the calculations
 function genExercise (size){ 
     let exercise = [];
-    exercise[0] = null; // This index stores the result of the calculation
-    let abacusNumber = 0;
+    exercise[0] = 0; // This index stores the result of the calculation
     let opBase;
 
     for (i=1;i<=size;i++){
@@ -19,12 +18,13 @@ function genExercise (size){
         // Defining the number and printing it on console
         if (i == 1){
             exercise[i] = Math.floor(Math.random() * 9) + 1; //Forces the first to be positive and greater than 0
-            abacusNumber = exercise[i];
-            console.log("Generated number:" + abacusNumber);
+            exercise[0] += exercise[i];
+            console.log("Generated number:" + exercise[0]);
         } else {
             exercise[i] = (Math.floor(Math.random() * 9) + 1) * operation.multiplier;
             console.log("Generated number:" + exercise[i]);
-            opBase = identifyBase(abacusNumber,operation,exercise[i]);
+            opBase = identifyBase(exercise[0],operation,exercise[i]);
+            exercise[0] += exercise[i];
         }
 
         if (i > 1){
@@ -60,7 +60,7 @@ function genExercise (size){
         table.innerHTML += `<tr>${exercise[i]}</tr>`;
         
         // Calculating the result
-        exercise[0] += exercise[i];
+        
         
         // Printing the result [needs fix]
         if (i == size){
@@ -94,7 +94,7 @@ function operationGen () {
         return operation;
 };
 
-// CHECK BASE10 SUB WHEN numberonabacus>10
+// CHECK BASE10 SUB WHEN numberonabacus>10|
 function identifyBase (number1, op, number2){
     let number1OnAbacus = convertToAbacus(number1);
     let number2OnAbacus = convertToAbacus(number2);
@@ -131,11 +131,14 @@ function testIdentification(){
     console.log(`Base 5: ${op.isBase5} | Base 10: ${op.isBase10}`);
 };
 
+// CONVERTING BIG NUMBERS TO ABACUS RODS
 function convertToAbacus (number){
-    let rod = {
+    let splitNumber = number.toString().split('').map(Number); // puts integer digits into an array
+
+    let rod = [{
         bead1: 0,
         bead5: 0,
-    };
+    }];
 
     if (number >= 5){
         rod.bead5 = 1;
