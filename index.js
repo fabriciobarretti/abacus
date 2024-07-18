@@ -3,7 +3,7 @@ let table = document.getElementById("ex-table");
 table.innerHTML = ``;
 
 // testIdentification();
-genExercise(3);
+// genExercise(3);
 
 // Isert base as a parameter here later in order to be possible for the user to customize the calculations
 function genExercise (size){ 
@@ -131,11 +131,15 @@ function testIdentification(){
     console.log(`Base 5: ${op.isBase5} | Base 10: ${op.isBase10}`);
 };
 
+convertToAbacus(123);
+
 // CONVERTING BIG NUMBERS TO ABACUS RODS
 function convertToAbacus (number){
     let splitNumber = number.toString().split('').map(Number); // puts integer digits into an array
+    console.log(splitNumber);
 
     let rod = [{
+        wholeNumber: splitNumber,
         bead1: 0,
         bead5: 0,
     }];
