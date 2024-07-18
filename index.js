@@ -1,8 +1,7 @@
-let table = document.getElementById("ex-table");
+    let table = document.getElementById("ex-table");
 
 table.innerHTML = ``;
 
-// testIdentification();
 // genExercise(3);
 
 // Isert base as a parameter here later in order to be possible for the user to customize the calculations
@@ -94,30 +93,7 @@ function operationGen () {
         return operation;
 };
 
-// CHECK BASE10 SUB WHEN numberonabacus>10|
-function identifyBase (number1, op, number2){
-    let number1OnAbacus = convertToAbacus(number1);
-    let number2OnAbacus = convertToAbacus(number2);
-    
-
-    if (op.name == "sub" && (number2 <= number1) && (number2 <= 4) && (number2 > number1OnAbacus.bead1)){
-        op.isBase5 = true;
-    } else if (op.name == "sub" && number2 > number1){
-        op.isBase10 = true
-    }
-
-    if (op.name == "add" && ((number1 + number2) <= 9) && (number1OnAbacus.bead1 + number2OnAbacus.bead1 > 4)){
-        op.isBase5 = true;
-    } else if (op.name == "add" && (number2 <= 9) && (number1 + number2) > 9){
-        op.isBase10 = true;
-    }
-
-    console.log("IDENTIFY BASE OBJECT: ");
-    console.log(op);
-    console.log(`Number 1: ${number1} | Number 2: ${number2}`);
-
-    return op;
-};
+testIdentification();
 
 function testIdentification(){
     let op = {
@@ -126,30 +102,86 @@ function testIdentification(){
         isBase10: false
     }
 
-    op = identifyBase(1,op,9);
+    op = identifyBase(11,op,9);
     
-    console.log(`Base 5: ${op.isBase5} | Base 10: ${op.isBase10}`);
+    // console.log(`Base 5: ${op.isBase5} | Base 10: ${op.isBase10}`);
 };
 
-convertToAbacus(123);
+// CHECK BASE10 SUB WHEN numberonabacus>10|
+function identifyBase (number1, op, number2){
+    let number1OnAbacus = convertToAbacus(number1);
+    let number2OnAbacus = convertToAbacus(number2);
 
-// CONVERTING BIG NUMBERS TO ABACUS RODS
-function convertToAbacus (number){
-    let splitNumber = number.toString().split('').map(Number); // puts integer digits into an array
-    console.log(splitNumber);
 
-    let rod = [{
-        wholeNumber: splitNumber,
-        bead1: 0,
-        bead5: 0,
-    }];
 
-    if (number >= 5){
-        rod.bead5 = 1;
-        rod.bead1 = number - 5;
-    } else {
-        rod.bead1 = number;
+    function isThereNumbersOnTheLeft (number, position){
+        let isThere = false;
+
+        for (i=position;i<number.length;i++){
+            if (number[i+1] > 0){
+                isThere == true;
+            }
+        }
     };
 
+    console.log(number1OnAbacus[1].wholeNumber);
+    console.log(number2OnAbacus[0].wholeNumber);
+
+   
+        for (i=0;i<number1OnAbacus.length;i++){
+            // console.log(number1OnAbacus[i].wholeNumber);
+            // console.log(number2OnAbacus[i].wholeNumber);
+
+            if (op.name == "sub" && (number2OnAbacus[i].wholeNumber <= number1OnAbacus[i].wholeNumber) && (number2OnAbacus[i].wholeNumber <= 4) && (number2OnAbacus[i].wholeNumber > number1OnAbacus.bead1)){
+                op.isBase5 = true;
+            } else if (op.name == "sub" && number2OnAbacus[i].wholeNumber > number1OnAbacus[i].wholeNumber){
+                op.isBase10 = true
+            }
+        
+            if (op.name == "add" && ((number1OnAbacus[i].wholeNumber + number2OnAbacus[i].wholeNumber) <= 9) && (number1OnAbacus[i].bead1 + number2OnAbacus[i].bead1 > 4)){
+                op.isBase5 = true;
+            } else if (op.name == "add" && ((number1OnAbacus[i].wholeNumber + number2OnAbacus[i].wholeNumber) > 9)){
+                op.isBase10 = true;
+            }
+
+            console.log("IDENTIFY BASE OBJECT: ");
+            console.log(op);
+            console.log(`Number 1: ${number1} | Number 2: ${number2}`);
+        }
+
+    
+
+    return op;
+};
+
+// convertToAbacus(1234567890);
+
+// CONVERTING BIG NUMBERS TO ABACUS RODS. THE BIGGER THE i VALUE, THE MORE TO THE LEFT ON THE ABACUS IT IS
+function convertToAbacus (number){
+    let splitNumber = number.toString().split('').map(Number); // puts integer digits into an array
+    // console.log(splitNumber);
+    // console.log(splitNumber.length);
+    
+    let rod = [];
+    let newPositionOnAbacus;
+
+    for (i=0;i<splitNumber.length;i++){
+        newPositionOnAbacus = splitNumber.length - (i+1); // Inverts the array
+        if (splitNumber[i] >= 5){
+            rod[newPositionOnAbacus] = {
+                wholeNumber: splitNumber[i],
+                bead1: (splitNumber[i] - 5),
+                bead5: 1
+            };
+            
+        } else {
+            rod[newPositionOnAbacus] = {
+                wholeNumber: splitNumber[i],
+                bead1: splitNumber[i],
+                bead5: 0
+            };
+        };
+    }
+    // console.log(rod);
     return rod;
 };
