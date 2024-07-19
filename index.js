@@ -154,17 +154,19 @@ function identifyBase (number1, op, number2){
                 op.isBase10 = true;
             }
 
-            let printingNumbers;
+
+            // Prints the number accordingly to its place value, i.e.: 234 = 200 + 30 + 4
+            let numberPlaceValue;
 
             if(i==0){
-                printingNumbers = 10**i;
+                numberPlaceValue = 10**i;
             } else {
-                printingNumbers = i * (10**i);
+                numberPlaceValue = i * (10**i);
             }
-            console.log(printingNumbers);
+            console.log(numberPlaceValue);
 
 
-            console.log(`Step #${i+1}: ${number1OnAbacus[i].wholeNumber*printingNumbers} ${op.symbol} ${number2OnAbacus[i].wholeNumber*printingNumbers}`);
+            console.log(`Step #${i+1}: ${number1OnAbacus[i].wholeNumber*numberPlaceValue} ${op.symbol} ${number2OnAbacus[i].wholeNumber*numberPlaceValue}`);
             console.log(op);
         }
 
