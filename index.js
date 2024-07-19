@@ -19,9 +19,8 @@ function genExercise (size){
             exercise[0] += exercise[i];
             console.log("Generated number:" + exercise[0]);
         } else {
-            
-            // SOMETHING IS BUGGED HERE
             do {
+            operation = operationGen();
             exercise[i] = (Math.floor(Math.random() * 9) + 1) * operation.multiplier;
             console.log(exercise[i]);
             } while (exercise[0] + exercise[i] < 0)
