@@ -93,8 +93,6 @@ function operationGen () {
         return operation;
 };
 
-testIdentification();
-
 function testIdentification(){
     let op = {
         name: "add",
@@ -102,21 +100,22 @@ function testIdentification(){
         isBase5: false,
         isBase10: false
     }
-    op = identifyBase(91,op,11);
+    op = identifyBase(98765,op,43210);
 };
 
-// CHECK BASE10 SUB WHEN numberonabacus>10|
+
 function identifyBase (number1, op, number2){
     let number1OnAbacus = convertToAbacus(number1);
     let number2OnAbacus = convertToAbacus(number2);
 
-    if (number2 > number1){
+    if (op.name == "sub" && number2 > number1){
         return console.log("ERROR: RESULT WOULD BE A NEGATIVE NUMBER.");
     } else {
         console.log(`Operation: ${number1} ${op.symbol} ${number2}`);
     }
 
-    // CONDITION FOR BASE10 SUMS.
+    // CONDITION FOR BASE10 SUMS? IS IT NECESSARY? IT ALREADY VERIFIES IF IT WOULD BE A NEGATIVE NUMBER WITH
+    // THE IF CONDITION ABOVE
     function isThereNumbersOnTheLeft (number, position){
         let isThere = false;
 
@@ -128,9 +127,10 @@ function identifyBase (number1, op, number2){
     };
 
     
-    // TO SOLVE THE PROBLEM: WHEN YOU HAVE 2-DIGIT FIRST NUMBER, THE ITERATION WILL HAVE i=2 AT SOME POINT, AND
+    // TO SOLVE THE PROBLEM WHEN YOU HAVE 2-DIGIT FIRST NUMBER, THE ITERATION WILL HAVE i=2 AT SOME POINT, AND
     // YOU DON'T HAVE A [2] FOR THE SECOND NUMBER BECAUSE IT'S JUST ONE DIGIT.
-    let rodsToBeChecked; 
+    let rodsToBeChecked;
+    let stepCounter = 1;
     
     if (number1OnAbacus.length > number2OnAbacus.length){
         rodsToBeChecked = number2OnAbacus.length;
@@ -138,44 +138,30 @@ function identifyBase (number1, op, number2){
         rodsToBeChecked = number1OnAbacus.length;
     }
     
-    // TRY TO INVERT THE FOR LOOP TO START WITH THE END OF THE RODS
-    // Recreate the if statement to check if the result would be negative
-        for (i=0;i<rodsToBeChecked;i++){
+    for (i=(rodsToBeChecked - 1);i>=0;i--){
 
-            if (op.name == "sub" && (number2OnAbacus[i].wholeNumber <= number1OnAbacus[i].wholeNumber) && (number2OnAbacus[i].wholeNumber <= 4) && (number2OnAbacus[i].wholeNumber > number1OnAbacus[i].bead1)){
-                op.isBase5 = true;
-            } else if (op.name == "sub" && number2OnAbacus[i].wholeNumber > number1OnAbacus[i].wholeNumber){
-                op.isBase10 = true
-            }
-        
-            if (op.name == "add" && ((number1OnAbacus[i].wholeNumber + number2OnAbacus[i].wholeNumber) <= 9) && (number1OnAbacus[i].bead1 + number2OnAbacus[i].bead1 > 4)){
-                op.isBase5 = true;
-            } else if (op.name == "add" && ((number1OnAbacus[i].wholeNumber + number2OnAbacus[i].wholeNumber) > 9)){
-                op.isBase10 = true;
-            }
-
-
-            // Prints the number accordingly to its place value, i.e.: 234 = 200 + 30 + 4
-            let numberPlaceValue;
-
-            if(i==0){
-                numberPlaceValue = 10**i;
-            } else {
-                numberPlaceValue = i * (10**i);
-            }
-            console.log(numberPlaceValue);
-
-
-            console.log(`Step #${i+1}: ${number1OnAbacus[i].wholeNumber*numberPlaceValue} ${op.symbol} ${number2OnAbacus[i].wholeNumber*numberPlaceValue}`);
-            console.log(op);
+        if (op.name == "sub" && (number2OnAbacus[i].wholeNumber <= number1OnAbacus[i].wholeNumber) && (number2OnAbacus[i].wholeNumber <= 4) && (number2OnAbacus[i].wholeNumber > number1OnAbacus[i].bead1)){
+            op.isBase5 = true;
+        } else if (op.name == "sub" && number2OnAbacus[i].wholeNumber > number1OnAbacus[i].wholeNumber){
+            op.isBase10 = true
+        }
+    
+        if (op.name == "add" && ((number1OnAbacus[i].wholeNumber + number2OnAbacus[i].wholeNumber) <= 9) && (number1OnAbacus[i].bead1 + number2OnAbacus[i].bead1 > 4)){
+            op.isBase5 = true;
+        } else if (op.name == "add" && ((number1OnAbacus[i].wholeNumber + number2OnAbacus[i].wholeNumber) > 9)){
+            op.isBase10 = true;
         }
 
-    
+        // Prints the number accordingly to its place value, i.e.: 234 = 200 + 30 + 4
+        let numberPlaceValue = 10**i;;
+
+        console.log(`Step #${stepCounter}: ${number1OnAbacus[i].wholeNumber * numberPlaceValue} ${op.symbol} ${number2OnAbacus[i].wholeNumber * numberPlaceValue}`);
+        console.log(op);
+        stepCounter++;
+        }
 
     return op;
 };
-
-// convertToAbacus(1234567890);
 
 // CONVERTING BIG NUMBERS TO ABACUS RODS. THE BIGGER THE i VALUE, THE MORE TO THE LEFT ON THE ABACUS IT IS
 function convertToAbacus (number){
