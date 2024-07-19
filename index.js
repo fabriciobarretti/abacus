@@ -1,8 +1,7 @@
-    let table = document.getElementById("ex-table");
-
+let table = document.getElementById("ex-table");
 table.innerHTML = ``;
 
-// genExercise(3);
+genExercise(3);
 
 // Isert base as a parameter here later in order to be possible for the user to customize the calculations
 function genExercise (size){ 
@@ -10,19 +9,25 @@ function genExercise (size){
     exercise[0] = 0; // This index stores the result of the calculation
     let opBase;
 
-    for (i=1;i<=size;i++){
+    for (let i=1;i<=size;i++){
         console.log(`STEP #` + i);
         let operation = operationGen();
         
         // Defining the number and printing it on console
         if (i == 1){
-            exercise[i] = Math.floor(Math.random() * 9) + 1; //Forces the first to be positive and greater than 0
+            exercise[i] = Math.floor(Math.random() * 9) + 1; //Forces the first to be greater than 0
             exercise[0] += exercise[i];
             console.log("Generated number:" + exercise[0]);
         } else {
+            
+            // SOMETHING IS BUGGED HERE
+            do {
             exercise[i] = (Math.floor(Math.random() * 9) + 1) * operation.multiplier;
+            console.log(exercise[i]);
+            } while (exercise[0] + exercise[i] < 0)
+
+            opBase = identifyBase(exercise[0],operation,exercise[i]);            
             console.log("Generated number:" + exercise[i]);
-            opBase = identifyBase(exercise[0],operation,exercise[i]);
             exercise[0] += exercise[i];
         }
 
@@ -30,8 +35,6 @@ function genExercise (size){
             console.log("Base 5: " + opBase.isBase5);
             console.log("Base 10: " + opBase.isBase10);
         }
-
-        
 
         // This would create a Base-5 exercise
         // op while (!opBase.isBase5){
@@ -43,8 +46,6 @@ function genExercise (size){
         // //     if (reviewedBase.isBase5) break;
         // // };
 
-
-
         // This one would check if the operation doesn't result in negative number before moving forward
         // if (abacusNumber + exercise[i] < 0){
         //     break
@@ -54,7 +55,6 @@ function genExercise (size){
         //     break
         // }
 
-        
         // I guess it's not working
         table.innerHTML += `<tr>${exercise[i]}</tr>`;
         
@@ -108,7 +108,7 @@ function identifyBase (number1, op, number2){
     let number1OnAbacus = convertToAbacus(number1);
     let number2OnAbacus = convertToAbacus(number2);
 
-    if (op.name == "sub" && number2 > number1){
+    if (op.name == "sub" && Math.abs(number2) > Math.abs(number1)){
         return console.log("ERROR: RESULT WOULD BE A NEGATIVE NUMBER.");
     } else {
         console.log(`Operation: ${number1} ${op.symbol} ${number2}`);
@@ -119,7 +119,7 @@ function identifyBase (number1, op, number2){
     function isThereNumbersOnTheLeft (number, position){
         let isThere = false;
 
-        for (i=position;i<number.length;i++){
+        for (let i = position;  i< number.length ; i++){
             if (number[i+1] > 0){
                 isThere == true;
             }
@@ -138,7 +138,7 @@ function identifyBase (number1, op, number2){
         rodsToBeChecked = number1OnAbacus.length;
     }
     
-    for (i=(rodsToBeChecked - 1);i>=0;i--){
+    for (let i=(rodsToBeChecked - 1); i >= 0 ; i--){
 
         if (op.name == "sub" && (number2OnAbacus[i].wholeNumber <= number1OnAbacus[i].wholeNumber) && (number2OnAbacus[i].wholeNumber <= 4) && (number2OnAbacus[i].wholeNumber > number1OnAbacus[i].bead1)){
             op.isBase5 = true;
@@ -153,7 +153,7 @@ function identifyBase (number1, op, number2){
         }
 
         // Prints the number accordingly to its place value, i.e.: 234 = 200 + 30 + 4
-        let numberPlaceValue = 10**i;;
+        let numberPlaceValue = 10**i;
 
         console.log(`Step #${stepCounter}: ${number1OnAbacus[i].wholeNumber * numberPlaceValue} ${op.symbol} ${number2OnAbacus[i].wholeNumber * numberPlaceValue}`);
         console.log(op);
@@ -170,7 +170,7 @@ function convertToAbacus (number){
     let rod = [];
     let newPositionOnAbacus;
 
-    for (i=0;i<splitNumber.length;i++){
+    for (let i=0;i<splitNumber.length;i++){
         newPositionOnAbacus = splitNumber.length - (i+1); // Inverts the array
         if (splitNumber[i] >= 5){
             rod[newPositionOnAbacus] = {
