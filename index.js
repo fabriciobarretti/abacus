@@ -98,13 +98,11 @@ testIdentification();
 function testIdentification(){
     let op = {
         name: "add",
+        symbol: "+",
         isBase5: false,
         isBase10: false
     }
-
-    op = identifyBase(11,op,9);
-    
-    // console.log(`Base 5: ${op.isBase5} | Base 10: ${op.isBase10}`);
+    op = identifyBase(91,op,11);
 };
 
 // CHECK BASE10 SUB WHEN numberonabacus>10|
@@ -112,8 +110,13 @@ function identifyBase (number1, op, number2){
     let number1OnAbacus = convertToAbacus(number1);
     let number2OnAbacus = convertToAbacus(number2);
 
+    if (number2 > number1){
+        return console.log("ERROR: RESULT WOULD BE A NEGATIVE NUMBER.");
+    } else {
+        console.log(`Operation: ${number1} ${op.symbol} ${number2}`);
+    }
 
-
+    // CONDITION FOR BASE10 SUMS.
     function isThereNumbersOnTheLeft (number, position){
         let isThere = false;
 
@@ -124,15 +127,22 @@ function identifyBase (number1, op, number2){
         }
     };
 
-    console.log(number1OnAbacus[1].wholeNumber);
-    console.log(number2OnAbacus[0].wholeNumber);
+    
+    // TO SOLVE THE PROBLEM: WHEN YOU HAVE 2-DIGIT FIRST NUMBER, THE ITERATION WILL HAVE i=2 AT SOME POINT, AND
+    // YOU DON'T HAVE A [2] FOR THE SECOND NUMBER BECAUSE IT'S JUST ONE DIGIT.
+    let rodsToBeChecked; 
+    
+    if (number1OnAbacus.length > number2OnAbacus.length){
+        rodsToBeChecked = number2OnAbacus.length;
+    } else {
+        rodsToBeChecked = number1OnAbacus.length;
+    }
+    
+    // TRY TO INVERT THE FOR LOOP TO START WITH THE END OF THE RODS
+    // Recreate the if statement to check if the result would be negative
+        for (i=0;i<rodsToBeChecked;i++){
 
-   
-        for (i=0;i<number1OnAbacus.length;i++){
-            // console.log(number1OnAbacus[i].wholeNumber);
-            // console.log(number2OnAbacus[i].wholeNumber);
-
-            if (op.name == "sub" && (number2OnAbacus[i].wholeNumber <= number1OnAbacus[i].wholeNumber) && (number2OnAbacus[i].wholeNumber <= 4) && (number2OnAbacus[i].wholeNumber > number1OnAbacus.bead1)){
+            if (op.name == "sub" && (number2OnAbacus[i].wholeNumber <= number1OnAbacus[i].wholeNumber) && (number2OnAbacus[i].wholeNumber <= 4) && (number2OnAbacus[i].wholeNumber > number1OnAbacus[i].bead1)){
                 op.isBase5 = true;
             } else if (op.name == "sub" && number2OnAbacus[i].wholeNumber > number1OnAbacus[i].wholeNumber){
                 op.isBase10 = true
@@ -144,9 +154,18 @@ function identifyBase (number1, op, number2){
                 op.isBase10 = true;
             }
 
-            console.log("IDENTIFY BASE OBJECT: ");
+            let printingNumbers;
+
+            if(i==0){
+                printingNumbers = 10**i;
+            } else {
+                printingNumbers = i * (10**i);
+            }
+            console.log(printingNumbers);
+
+
+            console.log(`Step #${i+1}: ${number1OnAbacus[i].wholeNumber*printingNumbers} ${op.symbol} ${number2OnAbacus[i].wholeNumber*printingNumbers}`);
             console.log(op);
-            console.log(`Number 1: ${number1} | Number 2: ${number2}`);
         }
 
     
@@ -159,8 +178,6 @@ function identifyBase (number1, op, number2){
 // CONVERTING BIG NUMBERS TO ABACUS RODS. THE BIGGER THE i VALUE, THE MORE TO THE LEFT ON THE ABACUS IT IS
 function convertToAbacus (number){
     let splitNumber = number.toString().split('').map(Number); // puts integer digits into an array
-    // console.log(splitNumber);
-    // console.log(splitNumber.length);
     
     let rod = [];
     let newPositionOnAbacus;
@@ -182,6 +199,5 @@ function convertToAbacus (number){
             };
         };
     }
-    // console.log(rod);
     return rod;
 };
