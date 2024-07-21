@@ -1,7 +1,7 @@
 let table = document.getElementById("ex-table");
 table.innerHTML = ``;
 
-genExercise(3);
+// genExercise(3);
 
 // Isert base as a parameter here later in order to be possible for the user to customize the calculations
 function genExercise (size){ 
@@ -10,19 +10,17 @@ function genExercise (size){
     let opBase;
 
     for (let i=1;i<=size;i++){
-        console.log(`STEP #` + i);
         let operation = operationGen();
         
         // Defining the number and printing it on console
         if (i == 1){
-            exercise[i] = Math.floor(Math.random() * 9) + 1; //Forces the first to be greater than 0
+            exercise[i] = Math.floor(Math.random() * 9) + 1; //Forces the first generated nubmer to be greater than 0
             exercise[0] += exercise[i];
             console.log("Generated number:" + exercise[0]);
         } else {
             do {
             operation = operationGen();
             exercise[i] = (Math.floor(Math.random() * 9) + 1) * operation.multiplier;
-            console.log(exercise[i]);
             } while (exercise[0] + exercise[i] < 0)
 
             opBase = identifyBase(exercise[0],operation,exercise[i]);            
@@ -92,16 +90,18 @@ function operationGen () {
         return operation;
 };
 
+testIdentification();
+
 function testIdentification(){
     let op = {
-        name: "add",
-        symbol: "+",
+        name: "sub",
+        symbol: "-",
         isBase5: false,
         isBase10: false
     }
-    op = identifyBase(98765,op,43210);
+    op = identifyBase(12,op,6);
+    console.log(op);
 };
-
 
 function identifyBase (number1, op, number2){
     let number1OnAbacus = convertToAbacus(number1);
@@ -110,7 +110,7 @@ function identifyBase (number1, op, number2){
     if (op.name == "sub" && Math.abs(number2) > Math.abs(number1)){
         return console.log("ERROR: RESULT WOULD BE A NEGATIVE NUMBER.");
     } else {
-        console.log(`Operation: ${number1} ${op.symbol} ${number2}`);
+        console.log(`Operation: ${number1} ${op.symbol} ${Math.abs(number2)}`);
     }
 
     // CONDITION FOR BASE10 SUMS? IS IT NECESSARY? IT ALREADY VERIFIES IF IT WOULD BE A NEGATIVE NUMBER WITH
@@ -154,8 +154,7 @@ function identifyBase (number1, op, number2){
         // Prints the number accordingly to its place value, i.e.: 234 = 200 + 30 + 4
         let numberPlaceValue = 10**i;
 
-        console.log(`Step #${stepCounter}: ${number1OnAbacus[i].wholeNumber * numberPlaceValue} ${op.symbol} ${number2OnAbacus[i].wholeNumber * numberPlaceValue}`);
-        console.log(op);
+        // console.log(`Operation #${stepCounter}: ${number1OnAbacus[i].wholeNumber * numberPlaceValue} ${op.symbol} ${number2OnAbacus[i].wholeNumber * numberPlaceValue}`);
         stepCounter++;
         }
 
